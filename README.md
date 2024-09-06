@@ -2,7 +2,7 @@
 
 This is an ansible callback plugin which enriches the environment of a playbook run with variables used with ansible's AWS modules. That means you do not have to set them in any other way.
 
-The AWS credentials used are temporary session tokens which can be retrieved from an AWS Cognito Identity Pool which is connected to an OIDC identity provider. This has only been tested with the one and only IDP – [kanidm](https://github.com/kanidm/kanidm). 🦀
+The AWS credentials used are temporary session tokens which can be retrieved from an AWS IAM identity provider which is connected to an (AWS-)external OIDC identity provider. This has only been tested with the one and only IDP – [kanidm](https://github.com/kanidm/kanidm). 🦀
 
 It can probably be modified to work with others.
 
@@ -13,12 +13,11 @@ It is important to highlight that this plugin is provided on an 'as-is' basis, w
 ## How to
 
 * create a public client OAuth2 configuration in your IDP (i.e., no client_secret involved)
-* create an **identity pool** in **AWS Cognito** that is linked to your IDP
-  * during that you also create an **IAM identity provider** which is linked to your IDP as well
-  * you will also be asked to assign a role to this **IAM identity provider** which is the one that will be assumed by this authentication process
-    * this role has "**web identity**" configured as trusted entity
+* create an **IAM identity provider** which is linked to your IDP
+  * you will be asked to assign a role to the **IAM identity provider**
+  * this role is the one that will be assumed by this authentication process
+    * it has "**web identity**" configured as trusted entity
     * during creation, you point it to the **IAM identity provider** you just created
-* you can apply further restrictions in your Cognito identity pool configuration and you should read about all of that to be sure you know what you are doing
 * drop the plugin file into a path where ansible looks for plugins (by default that is `callback_plugins` in the project root, but you can configure others)
 * enable the plugin in your `ansible.cfg` (`callbacks_enabled`)
 * configure the plugin using environment variables
